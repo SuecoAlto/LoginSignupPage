@@ -45,9 +45,13 @@ export default function Register() {
         navigate("/login"); // Redirect user to login page
       }
     } catch (error) {
-      console.log(error);
-      toast.error("Something went wrong. Please try again.");
-    }
+  if (error.response && error.response.data && error.response.data.error) {
+    toast.error(error.response.data.error);
+  } else {
+    toast.error("Something went wrong. Please try again.");
+  }
+  console.log(error);
+}
   };
 
   return (

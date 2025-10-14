@@ -16,7 +16,7 @@ export const register = async (req, res, next) => {
 
     if (userExists) {
       // If the user exists, send an error message
-      return res.status(400).json({ success: false, error: 'User already exists' });
+      return res.status(400).json({ success: false, error: 'User already exists, Try to login instead' });
     }
 
     // Create a new user in the database
