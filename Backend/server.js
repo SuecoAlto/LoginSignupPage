@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 
 import { connectDB } from './config/db.js';
 
-import signupRoutes from './routes/signupRoutes.js';
+import authRoutes from './routes/authRoutes.js';
 
 dotenv.config({ debug: true });
 
@@ -18,7 +18,7 @@ app.use(express.json()); // Parse JSON bodies
 app.use(cookieParser()); // Parse cookies
 
 // Mount routes
-app.use('/api/auth', signupRoutes);
+app.use('/api/auth', authRoutes);
 
 
 // Start Express server
