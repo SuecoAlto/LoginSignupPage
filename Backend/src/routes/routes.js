@@ -1,0 +1,21 @@
+
+import express from 'express';
+
+import { register } from '../controllers/signup/signup.js';
+import { login, logout } from '../controllers/login/login.js';
+import { protect } from '../middleware/middleware.js';
+import { getProfile } from '../controllers/login/userController.js';
+
+
+const router = express.Router();
+
+
+// Define a POST route for /register
+router.post('/register', register);
+router.post('/login', login);
+router.get('/logout', logout);
+router.get('/profile', protect, getProfile);
+
+
+export default router;
+

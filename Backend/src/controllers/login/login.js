@@ -60,3 +60,19 @@ export const login = async (req, res, next) => {
 };
 
 export { sendTokenResponse };
+
+// @desc    Logout user
+// @route   GET /api/auth/logout
+// @access  Public
+export const logout = (req, res, next) => {
+  // Set an invalid cookie that expires immediately
+  res.cookie('token', 'none', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({
+    success: true,
+    data: {},
+  });
+};
