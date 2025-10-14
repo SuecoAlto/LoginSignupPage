@@ -151,3 +151,26 @@ This commit scaffolds the initial client-side application using Vite for a fast 
 - Cleaned up the default Vite boilerplate files, including removing default assets, styles, and component code from `App.jsx` to establish a clean foundation for the project.
 
 
+URL:en i adressfältet ändras (/login, /register) och att texten på sidan byts ut (till "Login", "Register") — allt utan att sidan laddas om - tre huvudkomponenter från react-router som gör detta möjligt:
+
+<BrowserRouter> (Hjärnan/Chefen):
+
+Denna komponent, som vi la i main.jsx, är den övergripande chefen. Den använder webbläsarens inbyggda "History API" för att hålla koll på URL:en och ser till att din React-app och adressfältet alltid är synkroniserade. Den möjliggör hela systemet.
+
+<Link> (Navigatören/Dörröppnaren):
+
+När du klickar på en <Link to="/login">-komponent, gör den två saker:
+
+Den förhindrar webbläsarens standardbeteende, vilket skulle vara att göra en fullständig sidomladdning.
+
+Den talar om för <BrowserRouter> att "nu ska URL:en vara /login".
+
+<Routes> och <Route> (Växlaren/Innehållsvisaren):
+
+<Routes>-komponenten fungerar som en växel. Den tittar ständigt på den aktuella URL:en (som hanteras av <BrowserRouter>).
+
+Den letar sedan bland sina <Route>-barn för att hitta den vars path matchar den aktuella URL:en.
+
+När den hittar en match (t.ex. <Route path="/login" ... />), renderar den den komponent som anges i element-propen (i detta fall, vår Login-komponent).
+
+Så sammanfattningsvis: BrowserRouter är grunden, <Link> är det som initierar en URL-ändring utan omladdning, och <Routes>/<Route> är det som faktiskt byter ut innehållet på sidan som svar på den ändringen.
