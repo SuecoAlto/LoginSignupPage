@@ -5,6 +5,7 @@ import App from "./App.jsx";
 import { BrowserRouter } from "react-router";
 import axios from "axios";
 import { Toaster } from "react-hot-toast"; // Import Toaster
+import { UserContextProvider } from "./context/userContext.jsx";
 
 // Set a base URL for all Axios requests
 axios.defaults.baseURL = "http://localhost:5001/api/auth";
@@ -14,8 +15,10 @@ axios.defaults.withCredentials = true;
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
-      <Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />{" "} {/* Add Toaster */}
+      <UserContextProvider>
+        <App />
+        <Toaster position="bottom-right" toastOptions={{ duration: 2000 }} />{" "} {/* Add Toaster */}
+      </UserContextProvider>
     </BrowserRouter>
   </StrictMode>
 );
