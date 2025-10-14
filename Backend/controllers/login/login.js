@@ -7,13 +7,21 @@ import User from '../../models/User.js';
 const sendTokenResponse = (user, statusCode, res) => {
   // Create token
   const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: '30d', // Token is valid for 30 days
+    expiresIn: '1d', // Token is valid for 1 day
   });
 
-  res.status(statusCode).json({
-    success: true,
-    token,
-  });
+  const cookieOptions = {
+    // To make it a session cookie, omit 'expires' and 'maxAge'
+    httpOnly: true, // Cookie cannot be accessed via JavaScript on the client (protects against XSS)
+    secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
+  };
+
+  res
+    .status(statusCode)
+    .cookie('token', token, cookieOptions) // Set token as a cookie
+    .json({
+      success: true, // Only send a success message
+    });
 };
 
 

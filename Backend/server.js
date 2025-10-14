@@ -1,6 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+
 import { connectDB } from './config/db.js';
 
 import signupRoutes from './routes/signupRoutes.js';
@@ -13,6 +15,7 @@ const port = process.env.PORT || 5000;
 // Middleware
 app.use(cors()); // Enable CORS for all routes 
 app.use(express.json()); // Parse JSON bodies
+app.use(cookieParser()); // Parse cookies
 
 // Mount routes
 app.use('/api/auth', signupRoutes);
