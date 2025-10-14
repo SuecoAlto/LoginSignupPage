@@ -18,10 +18,10 @@ app.use(express.json()); // Parse JSON bodies
 app.use('/api/auth', signupRoutes);
 
 
-// Express
+// Start Express server
 app.listen(port, () => {
 	console.log(`Server started on port ${port}`);
 });
 
-//Mongodb connection
+// MongoDB connection
 connectDB();

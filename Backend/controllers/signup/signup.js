@@ -1,4 +1,7 @@
 import User from '../../models/User.js';
+import { sendTokenResponse } from '../login/login.js';  
+
+
 
 // @desc    Register a new user
 // @route   POST /api/auth/register
@@ -26,7 +29,7 @@ export const register = async (req, res, next) => {
     });
 
     // Send a success response
-    res.status(201).json({ success: true, data: user });
+    sendTokenResponse(user, 201, res);
 
   } catch (error) {
     // Send an error message if something goes wrong
