@@ -7,7 +7,7 @@ import axios from "axios";
 import { Toaster } from "react-hot-toast"; // Import Toaster
 
 // Set a base URL for all Axios requests
-axios.defaults.baseURL = "http://localhost:5173/";
+axios.defaults.baseURL = "http://localhost:5001/api/auth";
 // Allow Axios to send cookies with requests
 axios.defaults.withCredentials = true;
 

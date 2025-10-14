@@ -13,7 +13,7 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors()); // Enable CORS for all routes 
+app.use(cors({origin: 'http://localhost:5173', credentials: true})); // Enable CORS for all routes 
 app.use(express.json()); // Parse JSON bodies
 app.use(cookieParser()); // Parse cookies
 

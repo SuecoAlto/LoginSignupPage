@@ -35,7 +35,12 @@ export default function Register() {
       if (response.data.error) {
         toast.error(response.data.error);
       } else {
-        setData({}); // Clear the form
+        setData({  
+          name: '',
+          email: '',
+          phone: '',
+          password: '',
+        });
         toast.success("Registration successful! Welcome!");
         navigate("/login"); // Redirect user to login page
       }
