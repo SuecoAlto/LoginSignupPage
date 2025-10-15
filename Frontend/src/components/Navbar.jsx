@@ -23,7 +23,7 @@ export default function Navbar() {
   return (
     <nav className="p-4 bg-base-200 flex justify-between items-center">
       <Link to="/" className="text-xl font-bold">
-        Welcome
+        Auth App
       </Link>
       <div className="flex items-center gap-4">
         {user ? (

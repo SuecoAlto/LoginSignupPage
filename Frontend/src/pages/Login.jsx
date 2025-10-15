@@ -28,7 +28,7 @@ export default function Login() {
         setData({ email: "", password: "" }); // Reset form correctly
         setUser(responseData.user); // 4. UPDATE THE GLOBAL STATE!
         toast.success("Login successful! Welcome back.");
-        navigate("/"); // 5. Navigate to dashboard
+        navigate("/"); // 5. Navigate to homepage
       }
     } catch (error) {
       // Error handling remains the same

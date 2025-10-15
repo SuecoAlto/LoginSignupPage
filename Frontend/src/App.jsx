@@ -9,7 +9,7 @@ import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <div data-theme="sunset">
+    <div data-theme="cyberpunk">
       <hr />
       <Navbar />
       <Routes>
