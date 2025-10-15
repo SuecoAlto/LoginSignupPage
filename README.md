@@ -3,13 +3,7 @@
 This is a full-stack web application built with the MERN stack (MongoDB, Express.js, React, Node.js) providing a complete, secure, and modern foundation for user authentication. The project features user registration, login, stateless session management using JWTs in `httpOnly` cookies, protected routes, and a dynamic UI that responds to the user's authentication state.
 It serves as a robust starting point for any application requiring a secure user authentication system.
 
-## Screenshots
-
-### Login Page
 ![Login Page Screenshot](./1.Loginpage.png)
-
-### Registration Page
-![Registration Page Screenshot](./2.Registerpage.png)
 
 ## Live Demo
 
@@ -56,6 +50,7 @@ The project is architected with a clear separation between the backend server an
 
 * **User Registration**: New users can sign up with a name, email, phone number, and password, with backend validation.
 * **Secure User Login**: Registered users can log in, with password verification handled by `bcrypt.js`.
+* **Password Reset Flow**: A complete, secure flow for users who have forgotten their password. It involves generating a unique, single-use, time-limited token and sending an email with reset instructions via Nodemailer.
 * **Stateless Authentication**: The application uses JWTs stored in secure, `httpOnly` session cookies, a modern approach that protects against XSS attacks.
 * **Protected Routes**: The application features a `protect` middleware on the backend to secure specific endpoints, ensuring they are only accessible to authenticated users.
 * **Global State Management**: React Context provides a global state for the user, ensuring the UI instantly reacts to login and logout events without needing a page refresh.
