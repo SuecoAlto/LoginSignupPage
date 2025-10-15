@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+import sendEmail from '../../utils/email.js';
+
 import jwt from 'jsonwebtoken';
 
 import User from '../../models/User.js';
@@ -80,4 +83,91 @@ export const logout = (req, res, next) => {
     success: true,
     data: {},
   });
+};
+
+
+// @desc    Glömt lösenord
+// @route   POST /api/auth/forgot-password
+// @access  Public
+export const forgotPassword = async (req, res, next) => {
+  // 1. Hitta användaren baserat på e-post
+  const user = await User.findOne({ email: req.body.email });
+
+  // Om ingen användare hittas, skicka ett framgångsmeddelande ändå för att inte avslöja vilka e-postadresser som finns i systemet.
+  if (!user) {
+    return res.status(200).json({ success: true, data: 'Email sent' });
+  }
+
+  // 2. Generera en slumpmässig återställningstoken
+  const resetToken = crypto.randomBytes(20).toString('hex');
+
+  // 3. Hasha token och spara den i databasen
+  user.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+
+  // 4. Sätt en utgångstid (10 minuter)
+  user.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  await user.save({ validateBeforeSave: false });
+
+  // 5. Skapa återställnings-URL för e-postmeddelandet
+  const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
+  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Password reset token',
+      message,
+    });
+
+    res.status(200).json({ success: true, data: 'Email sent' });
+  } catch (err) {
+    console.error(err);
+    // Om mejlet misslyckas, rensa token från databasen
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return res.status(500).json({ error: 'Email could not be sent' });
+  }
+};
+
+
+
+// @desc    Återställ lösenord
+// @route   PUT /api/auth/reset-password/:resetToken
+// @access  Public
+export const resetPassword = async (req, res, next) => {
+  try {
+    // 1. Hasha token från URL:en för att kunna jämföra med den i databasen
+    const resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(req.params.resetToken)
+      .digest('hex');
+
+    // 2. Hitta användaren baserat på den hashade tokenen och se till att den inte har gått ut
+    const user = await User.findOne({
+      passwordResetToken: resetPasswordToken,
+      passwordResetExpires: { $gt: Date.now() }, // $gt = "greater than"
+    });
+
+    if (!user) {
+      return res.status(400).json({ success: false, error: 'Invalid or expired token' });
+    }
+
+    // 3. Sätt det nya lösenordet
+    user.password = req.body.password;
+    // Rensa återställningsfälten
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ success: true, data: 'Password reset successful' });
+
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 };
