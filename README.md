@@ -1,4 +1,4 @@
-# MERN Stack Authentication Boilerplate
+# MERN Stack Authentication Page
 
 This is a full-stack web application built with the MERN stack (MongoDB, Express.js, React, Node.js) providing a complete, secure, and modern foundation for user authentication. The project features user registration, login, stateless session management using JWTs in `httpOnly` cookies, protected routes, and a dynamic UI that responds to the user's authentication state.
 It serves as a robust starting point for any application requiring a secure user authentication system.
