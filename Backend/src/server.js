@@ -14,8 +14,22 @@ dotenv.config({ debug: true });
 const app = express();
 const port = process.env.PORT || 5000;
 
+const allowedOrigins = [
+  'http://localhost:5173',
+  'https://loginsignuppage-9ztx.onrender.com' // Lägg till din live-URL här
+];
+
 // Middleware
-app.use(cors({origin: 'http://localhost:5173', credentials: true})); // Enable CORS for all routes 
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true
+})); 
 app.use(express.json()); // Parse JSON bodies
 app.use(cookieParser()); // Parse cookies
 
