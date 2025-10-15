@@ -1,4 +1,4 @@
-# MERN Stack Autentisering Boilerplate
+# MERN Stack Autentisering 
 
 Detta är en fullstack-webbapplikation byggd med MERN-stacken (MongoDB, Express.js, React, Node.js) som tillhandahåller en komplett, säker och modern grund för användarautentisering. Projektet innehåller användarregistrering, inloggning, lösenordsåterställning, tillståndslös sessionshantering med hjälp av JWT:er i `httpOnly`-cookies, skyddade rutter och ett dynamiskt gränssnitt som reagerar på användarens autentiseringsstatus.
 
@@ -8,7 +8,7 @@ Det fungerar som en robust startpunkt för alla applikationer som kräver ett s�
 
 ## Live Demo
 
-Du kan prova appen live, hostade på Render.com.
+Du kan prova appen live, hostade på Render.com
 
 👉 [**Klicka här för att öppna live demon!**](https://loginsignuppage-9ztx.onrender.com/)  
 
@@ -90,7 +90,7 @@ Följ dessa steg för att klona och köra projektet på din lokala maskin.
 
 1.  **Klona repositoryt:**
     ```bash
-    git clone https://github.com/SuecoAlto/Mern_Stack_Login_and_Signup_Page.git
+    git clone https://github.com/SuecoAlto/LoginSignupPage.git
     cd Mern_Stack_Login_and_Signup_Page
     ```
 
@@ -153,11 +153,11 @@ Följ dessa steg för att klona och köra projektet på din lokala maskin.
 
 ## Utvecklingsresa & Viktiga felsökningssteg
 
-Under utvecklingen påträffades och löstes flera vanliga men lärorika problem, vilket demonstrerar en praktisk förståelse av fullstack-utvecklingsutmaningar.
+Under utvecklingen påträffades och löstes flera vanliga men lärorika problem.
 
 * **Problem 1: `404 Not Found` på API-anrop**
     * **Problem:** Initiala API-anrop från frontend misslyckades med ett 404-fel.
-    * **Diagnos:** Axios `baseURL` på klienten pekade felaktigt på frontend Vite-servern (`:5173`) istället för backend Express-servern (`:5000`).
+    * **Diagnos:** Axios `baseURL` på klienten pekade felaktigt på frontend Vite-servern (`:5173`) istället för backend Express-servern (`:5001`).
     * **Lösning:** `axios.defaults.baseURL` i `main.jsx` korrigerades för att peka på rätt backend-adress.
 
 * **Problem 2: CORS-fel med cookies**
@@ -180,12 +180,7 @@ Under utvecklingen påträffades och löstes flera vanliga men lärorika problem
     * **Diagnos:** `forgotPassword`-kontrollern genererade återställnings-URL:er med `req.protocol` och `req.get('host')`, vilket löstes till backend-serverns adress.
     * **Lösning:** Uppdaterade URL-genereringen för att använda en `FRONTEND_URL`-miljövariabel som pekar på React-applikationen (`http://localhost:5173` i utveckling), vilket säkerställer att återställningslänkar korrekt navigerar användare till frontend återställningslösenordssidan.
 
-* **Problem 6: Portkonfigurationsuppdateringar**
-    * **Problem:** Applikationen använde initialt port 5000 för backend, vilket står i konflikt med AirPlay på macOS.
-    * **Diagnos:** macOS Monterey och senare versioner reserverar port 5000 för AirPlay Receiver, vilket orsakar `EADDRINUSE`-fel.
-    * **Lösning:** Ändrade backend för att köras på port 5001 och uppdaterade alla relaterade konfigurationer, inklusive Axios baseURL och CORS-inställningar.
-
-* **Problem 7: CORS Preflight Request-fel för lösenordsåterställning**
+* **Problem 6: CORS Preflight Request-fel för lösenordsåterställning**
     * **Problem:** `POST`-begäranden till `/forgot-password` misslyckades med CORS preflight-fel, även om andra endpoints fungerade.
     * **Diagnos:** Komplexa begäranden (som `POST` med `application/json`) kräver explicit hantering av `OPTIONS` preflight-begäranden.
     * **Lösning:** Lade till `app.options('*', cors(corsOptions))` för att explicit hantera alla preflight-begäranden före annan middleware, vilket säkerställer att rätt CORS-headers skickas för alla begärantyper.

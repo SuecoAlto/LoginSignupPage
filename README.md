@@ -89,7 +89,7 @@ Follow these steps to clone and run the project on your local machine.
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/SuecoAlto/Mern_Stack_Login_and_Signup_Page.git](https://github.com/SuecoAlto/Mern_Stack_Login_and_Signup_Page.git)
+    git clone https://github.com/SuecoAlto/LoginSignupPage.git
     cd Mern_Stack_Login_and_Signup_Page
     ```
 
@@ -156,7 +156,7 @@ During development, several common but educational issues were encountered and r
 
 * **Issue 1: `404 Not Found` on API Calls**
     * **Problem:** Initial API calls from the frontend failed with a 404 error.
-    * **Diagnosis:** The Axios `baseURL` on the client was incorrectly pointing to the frontend's Vite server (`:5173`) instead of the backend's Express server (`:5000`).
+    * **Diagnosis:** The Axios `baseURL` on the client was incorrectly pointing to the frontend's Vite server (`:5173`) instead of the backend's Express server (`:5001`).
     * **Solution:** The `axios.defaults.baseURL` in `main.jsx` was corrected to point to the proper backend address.
 
 * **Issue 2: CORS Error with Cookies**
