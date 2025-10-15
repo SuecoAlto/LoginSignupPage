@@ -31,11 +31,13 @@ The project is architected with a clear separation between the backend server an
 * **Node.js**: JavaScript runtime environment for executing server-side code.
 * **Express.js**: The framework used to build our web server and API, handling routing and middleware.
 * **MongoDB & Mongoose**: A NoSQL database (managed via MongoDB Atlas) and an ODM library to simplify data modeling and interaction.
-* **JSON Web Tokens (JWT)**: Used to create secure access tokens for stateless authentication.
+* **JSON Web Tokens (JWT)**: Used to create secure access tokens for stateless authentication and password reset flows.
 * **bcrypt.js**: A library for hashing user passwords before storing them in the database.
+* **Nodemailer**: A library for sending emails, used for the password reset functionality.
 * **cookie-parser**: Middleware to parse cookies attached to the client request, essential for our auth flow.
 * **CORS**: Middleware to enable Cross-Origin Resource Sharing between the client and server.
 * **Dotenv**: Manages environment variables to keep sensitive information secure.
+* **ES Modules (ESM)**: The project uses modern ES module syntax throughout for better compatibility and standardization.
 
 ### Frontend
 * **React**: A JavaScript library for building dynamic and interactive user interfaces.
@@ -44,7 +46,7 @@ The project is architected with a clear separation between the backend server an
 * **Axios**: A promise-based HTTP client for seamless communication with the backend API.
 * **React Context**: Used for global state management to track the user's authentication status across the application.
 * **Tailwind CSS**: A utility-first CSS framework for rapid and responsive UI development.
-* **DaisyUI**: A component library for Tailwind CSS providing pre-built and customizable UI components.
+* **DaisyUI**: A component library for Tailwind CSS providing pre-built and customizable UI components with "sunset" theme centrally managed.
 * **lucid-react**: A library for clean and beautiful icons.
 * **react-hot-toast**: For displaying user-friendly notifications and feedback.
 
@@ -111,12 +113,27 @@ Follow these steps to clone and run the project on your local machine.
 4.  **Configure Environment Variables (Backend):**
     * Navigate to the `Backend` directory.
     * Create a file named `.env`.
-    * Add the following variables. You will need to provide your own MongoDB Atlas connection string and generate a secure JWT secret.
+    * Add the following variables. You will need to provide your own credentials for MongoDB Atlas and an email service (like Mailtrap for development).
 
         ```
-        MONGO_URI=your_mongodb_atlas_connection_string
-        JWT_SECRET=your_super_secret_jwt_string
+        # Server Configuration
         PORT=5001
+
+        # MongoDB
+        MONGO_URI=your_mongodb_atlas_connection_string
+
+        # JWT
+        JWT_SECRET=your_super_secret_jwt_string
+
+        # Frontend URL (for generating correct password reset links)
+        FRONTEND_URL=http://localhost:5173
+
+        # Email Service (e.g., Mailtrap for development)
+        EMAIL_HOST=sandbox.smtp.mailtrap.io
+        EMAIL_PORT=2525
+        EMAIL_USER=your_mailtrap_username
+        EMAIL_PASS=your_mailtrap_password
+        EMAIL_FROM=noreply@yourapp.com
         ```
     * You can generate a strong secret key by running this command in your terminal:
         ```bash
@@ -161,3 +178,18 @@ During development, several common but educational issues were encountered and r
     * **Problem:** A console warning appeared after a successful form submission.
     * **Diagnosis:** The form's state was being reset with an empty object (`setData({})`), causing the `value` prop of the inputs to change from an empty string (`''`) to `undefined`.
     * **Solution:** The state reset logic was corrected to reset the state to its original object structure, ensuring the inputs remained "controlled" by React.
+
+* **Issue 5: Password Reset Email Links Pointing to Wrong URL**
+    * **Problem:** When users clicked on password reset links in emails, they got 404 errors because the links pointed to the backend server (`localhost:5001`) instead of the frontend application.
+    * **Diagnosis:** The `forgotPassword` controller was generating reset URLs using `req.protocol` and `req.get('host')`, which resolved to the backend server's address.
+    * **Solution:** Updated the URL generation to use a `FRONTEND_URL` environment variable that points to the React application (`http://localhost:5173` in development), ensuring reset links correctly navigate users to the frontend reset password page.
+
+* **Issue 6: Port Configuration Updates**
+    * **Problem:** The application initially used port 5000 for the backend, which conflicts with AirPlay on macOS.
+    * **Diagnosis:** macOS Monterey and later versions reserve port 5000 for AirPlay Receiver, causing `EADDRINUSE` errors.
+    * **Solution:** Changed the backend to run on port 5001 and updated all related configurations, including Axios baseURL and CORS settings.
+
+* **Issue 7: CORS Preflight Request Failures for Password Reset**
+    * **Problem:** `POST` requests to `/forgot-password` failed with CORS preflight errors, even though other endpoints worked.
+    * **Diagnosis:** Complex requests (like `POST` with `application/json`) require explicit handling of `OPTIONS` preflight requests.
+    * **Solution:** Added `app.options('*', cors(corsOptions))` to explicitly handle all preflight requests before other middleware, ensuring proper CORS headers are sent for all request types.
