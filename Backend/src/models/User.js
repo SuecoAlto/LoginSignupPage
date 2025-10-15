@@ -29,6 +29,10 @@ const userSchema = new mongoose.Schema({
     minlength: 6, // The password must be at least 6 characters long
     select: false, // This field will not be returned in normal database queries
   },
+
+  passwordResetToken: String,
+  passwordResetExpires: Date,
+
 });
 
 // Middleware that runs BEFORE a user is saved to the database
