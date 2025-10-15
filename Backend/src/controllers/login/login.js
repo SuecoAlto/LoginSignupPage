@@ -16,11 +16,16 @@ const sendTokenResponse = (user, statusCode, res) => {
     secure: process.env.NODE_ENV === 'production', // Only send over HTTPS in production
   };
 
+  // Remove password from user object before sending
+  const userWithoutPassword = { ...user._doc };
+  delete userWithoutPassword.password;
+
   res
     .status(statusCode)
     .cookie('token', token, cookieOptions) // Set token as a cookie
     .json({
-      success: true, // Only send a success message
+      success: true,
+      user: userWithoutPassword, // ADD USER DATA HERE
     });
 };
 

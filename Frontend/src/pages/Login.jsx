@@ -1,10 +1,12 @@
-import { useState } from "react";
+import { useState, useContext } from "react"; // 1. Import useContext
 import { Link, useNavigate } from "react-router";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { UserContext } from "../context/userContext"; // 2. Import UserContext
 
 export default function Login() {
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext); // 3. Get setUser
   const [data, setData] = useState({
     email: "",
     password: "",
@@ -14,19 +16,22 @@ export default function Login() {
     e.preventDefault();
     const { email, password } = data;
     try {
-      const response = await axios.post("/login", {
+      const { data: responseData } = await axios.post("/login", {
+        // Rename variable here
         email,
         password,
       });
 
-      if (response.data.error) {
-        toast.error(response.data.error);
+      if (responseData.error) {
+        toast.error(responseData.error);
       } else {
-        setData({}); // Clear the form
+        setData({ email: "", password: "" }); // Reset form correctly
+        setUser(responseData.user); // 4. UPDATE THE GLOBAL STATE!
         toast.success("Login successful! Welcome back.");
-        navigate("/"); // Redirect user to home page
+        navigate("/"); // 5. Navigate to dashboard
       }
     } catch (error) {
+      // Error handling remains the same
       if (error.response && error.response.data && error.response.data.error) {
         toast.error(error.response.data.error);
       } else {

@@ -174,3 +174,86 @@ Den letar sedan bland sina <Route>-barn för att hitta den vars path matchar den
 När den hittar en match (t.ex. <Route path="/login" ... />), renderar den den komponent som anges i element-propen (i detta fall, vår Login-komponent).
 
 Så sammanfattningsvis: BrowserRouter är grunden, <Link> är det som initierar en URL-ändring utan omladdning, och <Routes>/<Route> är det som faktiskt byter ut innehållet på sidan som svar på den ändringen.
+
+
+Implementing Protected Routes and Global State
+
+To create a complete authentication experience, a system was implemented to manage the user's logged-in state across the application and protect certain routes from unauthorized access. This was achieved in three main parts:
+
+Part A: Backend Endpoints & Security Middleware
+
+The backend was enhanced with the necessary endpoints to manage a user's session:
+
+protect Middleware: A crucial security middleware was created to act as a gatekeeper for private routes. It works by:
+
+Extracting the JWT from the incoming httpOnly cookie on a request.
+
+Verifying the token's signature and expiration against the JWT_SECRET.
+
+If valid, it fetches the corresponding user from the database and attaches their data to the req object.
+
+If the token is missing or invalid, it immediately sends a 401 Unauthorized error, blocking access to the intended route.
+
+/profile Endpoint (GET): A new, protected route that utilizes the protect middleware. It allows the frontend to ask the server, "Who is the currently logged-in user?" and receive their profile data back.
+
+/logout Endpoint (GET): A public route that securely logs a user out by clearing the session cookie in their browser.
+
+Part B: Global State with React Context
+
+To manage the user's authentication status across all frontend components without "prop drilling," React Context was implemented:
+
+UserContext: A global context was created to serve as a single source of truth for the authenticated user's data.
+
+UserContextProvider: This provider component wraps the entire application. It holds the user state (user, setUser).
+
+Automatic Session Check: The provider contains a useEffect hook that runs once on initial application load. This hook makes a request to the /profile endpoint. If the request is successful (meaning a valid session cookie was sent by the browser), the user's data is populated into the global state, automatically logging them in.
+
+Part C: Dynamic UI and User Interaction
+
+The global state from UserContext was then used to make the UI dynamic and responsive to the user's authentication status:
+
+Dynamic Navbar: The navigation bar now uses useContext to check if a user is logged in.
+
+If logged out, it displays links to "Login" and "Register".
+
+If logged in, it displays a welcome message with the user's name, a link to the "Dashboard," and a "Logout" button.
+
+Protected Dashboard Page: A new dashboard page was created that is accessible to all users but only displays profile information if the user object in the context is populated.
+
+Logout Functionality: The "Logout" button in the navbar triggers a function that calls the /logout endpoint on the backend and simultaneously sets the global user state on the frontend to null, instantly updating the UI to a logged-out state.
+
+Key Troubleshooting Steps During Implementation
+
+During development, several common but educational issues were encountered and resolved. This debugging journey was critical to achieving a stable and functional authentication flow.
+
+Issue 1: 404 Not Found on API Calls
+
+Problem: Initial registration attempts from the frontend failed with a 404 error.
+
+Diagnosis: The browser's developer console showed that requests were being sent to the frontend's Vite server (:5173) instead of the backend's Express server (:5000).
+
+Solution: The axios.defaults.baseURL in main.jsx was corrected to point to the proper backend address (http://localhost:5000/api/auth).
+
+Issue 2: CORS Error with Cookies
+
+Problem: After fixing the baseURL, API calls were being blocked by the browser due to CORS policy.
+
+Diagnosis: Standard app.use(cors()) on the backend is insufficient when the frontend sends credentials (cookies). The browser requires a more explicit trust policy from the server.
+
+Solution: The CORS middleware on the server (server/index.js) was updated to explicitly specify the frontend's origin and allow credentials: cors({ origin: 'http://localhost:5173', credentials: true }).
+
+Issue 3: ERR_HTTP_HEADERS_SENT Server Crash
+
+Problem: The backend server crashed whenever a request was made to a protected route by a logged-in user.
+
+Diagnosis: The protect middleware function was calling next() to pass control to the controller but did not stop its own execution. It then proceeded to a final check that also tried to send a response, resulting in an attempt to send two responses to a single request.
+
+Solution: The logic in the protect middleware was refactored into a clear if/else block, ensuring that for any given request, the function would either call next() OR send an error response, but never both.
+
+Issue 4: React Warning: "Controlled to Uncontrolled Input"
+
+Problem: A console warning appeared after a successful registration.
+
+Diagnosis: The form's state was being reset with an empty object (setData({})), which caused the value prop of the inputs to change from an empty string ('') to undefined.
+
+Solution: The state reset logic was corrected to setData({ name: '', ... }), preserving the object's structure and ensuring the inputs remained "controlled" by React throughout their lifecycle.

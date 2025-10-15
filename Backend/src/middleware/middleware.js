@@ -3,24 +3,22 @@ import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
 export const protect = async (req, res, next) => {
-  let token;
+  const token = req.cookies.token; // Get token directly
 
-  if (req.cookies.token) {
+  if (token) { // If a token exists...
     try {
       // Verify token from cookie
-      const decoded = jwt.verify(req.cookies.token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Get user from database (without password) and add to req object
+      // Get user from database and add to req object
       req.user = await User.findById(decoded.id).select('-password');
 
-      next(); // Continue to next function (the controller)
+      next(); // Continue to controller
     } catch (error) {
       console.error(error);
       return res.status(401).json({ success: false, error: 'Not authorized, token failed' });
     }
-  }
-
-  if (!token) {
+  } else { // Otherwise, if no token exists...
     return res.status(401).json({ success: false, error: 'Not authorized, no token' });
   }
 };
