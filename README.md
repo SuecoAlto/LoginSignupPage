@@ -1,259 +1,163 @@
-# LoginSignupPage
-Full-Stack Mern login and signup configuration page 
+# MERN Stack Authentication Boilerplate
 
+This is a full-stack web application built with the MERN stack (MongoDB, Express.js, React, Node.js) providing a complete, secure, and modern foundation for user authentication. The project features user registration, login, stateless session management using JWTs in `httpOnly` cookies, protected routes, and a dynamic UI that responds to the user's authentication state.
+It serves as a robust starting point for any application requiring a secure user authentication system.
 
+## Screenshots
 
-### Let’s quickly go through what each package does:
+### Login Page
+![Login Page Screenshot](./1.Loginpage.png)
 
-* **express:** The framework used to build our web server and API.  
-* **mongoose:** Makes it easy to communicate with our MongoDB database.  
-* **cors:** Middleware that allows requests from our frontend (which runs on a different port).  
-* **nodemon:** A tool that automatically restarts our server when we make changes to the code.  
-* **bcryptjs:** A library used to *hash* (cryptographically protect) users’ passwords before they’re stored in the database.  
-* **jsonwebtoken (JWT):** Used to create authentication tokens that help keep users logged in and protect certain parts of our API.  
-* **dotenv:** Used to manage secret keys and connection strings in a `.env` file.
-* vite: 
-* axios:
-* react-router:
-* lucid-react:
-* react-hot-toast:
-* Tailwind CSS: 
-* DaisyUI
+### Registration Page
+![Registration Page Screenshot](./2.Registerpage.png)
 
+## Live Demo
 
+You can try the App live, hosted on Render.com.
 
-###
-Create a JSON Web Token (JWT) secret
+[**👉 Click here to open the live demo!**](https://your-live-url.com)
 
-```bash
-node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
-````
-and add to the .env file as JWT_SECRET=
-
-### Authentication Flow with JSON Web Tokens (JWT)
-
-This application uses **JSON Web Tokens (JWT)** to manage user sessions in a secure and stateless way.  
-This is the standard method used by modern APIs and web applications.
+⚠️ Please note: 
+Since the app is hosted on Render’s free tier, the server “sleeps” when inactive.
+This means it may take up to 1–2 minutes for the application to fully start the first time you open it. Once it’s awake, it runs smoothly.
 
 ---
 
-#### How It Works: Step-by-Step
+## Tech Stack
 
-The authentication flow follows a simple and robust process:
+The project is architected with a clear separation between the backend server and the frontend client, utilizing the following technologies:
 
-1. **Login:** The user sends their email and password to the server.  
-2. **Verification & Token Creation:** The server verifies the credentials. If they are correct, it creates a unique JWT (a “key”) that contains the user’s ID and an expiration date. This token is then sent back to the client.  
-3. **Client-Side Storage:** The client (React app) receives the token and stores it securely (e.g., in `localStorage`).  
-4. **Authenticated Requests:** For every future API request that requires authentication (e.g., fetching profile data), the client includes the stored JWT in the request’s `Authorization` header.  
-5. **Server Verification:** The server receives the request, extracts the token, and verifies its signature using its secret key.  
-   If the signature is valid and the token hasn’t expired, the server knows exactly who the user is and can grant access to the requested resource.
+### Backend
+* **Node.js**: JavaScript runtime environment for executing server-side code.
+* **Express.js**: The framework used to build our web server and API, handling routing and middleware.
+* **MongoDB & Mongoose**: A NoSQL database (managed via MongoDB Atlas) and an ODM library to simplify data modeling and interaction.
+* **JSON Web Tokens (JWT)**: Used to create secure access tokens for stateless authentication.
+* **bcrypt.js**: A library for hashing user passwords before storing them in the database.
+* **cookie-parser**: Middleware to parse cookies attached to the client request, essential for our auth flow.
+* **CORS**: Middleware to enable Cross-Origin Resource Sharing between the client and server.
+* **Dotenv**: Manages environment variables to keep sensitive information secure.
 
-This system is highly efficient because the server does **not** need to store any session information.  
-It fully trusts the digitally signed information contained within each token.
-
----
-
-#### Anatomy of a JWT
-
-A JWT is not just a random string — it has a specific, decodable structure consisting of **three parts** separated by dots:  
-**Header.Payload.Signature**
-
-Let’s analyze an example token:
-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZWQ5ZDAxNTc2ZjU5MGJmOTQ3ODViZSIsImlhdCI6MTc2MDQwNjc1NiwiZXhwIjoxNzYyOTk4NzU2fQ.bjTn7PLMFR8U3oLwIRzw5uOJ00wihIeE9dZ_LjZTSgI
-
----
-
-**1. Header**  
-* **Part:** `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9`  
-* **Decoded:** `{"alg":"HS256","typ":"JWT"}`  
-* **Explanation:** This is metadata about the token itself.  
-  * `alg` specifies the signing algorithm used (in this case, HMAC SHA-256).  
-  * `typ` confirms that it is a JWT.
+### Frontend
+* **React**: A JavaScript library for building dynamic and interactive user interfaces.
+* **Vite**: A modern and extremely fast build tool for the frontend development experience.
+* **React Router**: For handling client-side routing, enabling a Single-Page Application (SPA) experience.
+* **Axios**: A promise-based HTTP client for seamless communication with the backend API.
+* **React Context**: Used for global state management to track the user's authentication status across the application.
+* **Tailwind CSS**: A utility-first CSS framework for rapid and responsive UI development.
+* **DaisyUI**: A component library for Tailwind CSS providing pre-built and customizable UI components.
+* **lucid-react**: A library for clean and beautiful icons.
+* **react-hot-toast**: For displaying user-friendly notifications and feedback.
 
 ---
 
-**2. Payload**  
-* **Part:** `eyJpZCI6IjY4ZWQ5ZDAxNTc2ZjU5MGJmOTQ3ODViZSIsImlhdCI6MTc2MDQwNjc1NiwiZXhwIjoxNzYyOTk4NzU2fQ`  
-* **Decoded:** `{"id":"68ed9d01576f590bf94785be","iat":1760406756,"exp":1762998756}`  
-* **Explanation:** This contains the actual data carried by the token.
-  * `"id"` — The user’s unique ID from the database. This is how the server identifies who is making the request.  
-  * `"iat"` (Issued At) — A timestamp indicating when the token was created.  
-  * `"exp"` (Expiration Time) — A timestamp indicating when the token expires and becomes invalid (set to 30 days in this project).
+## Core Features & Concepts
+
+* **User Registration**: New users can sign up with a name, email, phone number, and password, with backend validation.
+* **Secure User Login**: Registered users can log in, with password verification handled by `bcrypt.js`.
+* **Stateless Authentication**: The application uses JWTs stored in secure, `httpOnly` session cookies, a modern approach that protects against XSS attacks.
+* **Protected Routes**: The application features a `protect` middleware on the backend to secure specific endpoints, ensuring they are only accessible to authenticated users.
+* **Global State Management**: React Context provides a global state for the user, ensuring the UI instantly reacts to login and logout events without needing a page refresh.
+* **Dynamic UI**: The navigation bar and other components change dynamically based on the user's authentication status.
+* **Client-Side Routing (SPA)**: The application functions as a Single-Page Application, where page content is changed without full-page reloads. This is made possible by three key components from **React Router**:
+    * **`<BrowserRouter>`**: Acts as the "brain," using the browser's History API to keep the UI and URL in sync.
+    * **`<Link>`**: The "navigator" that intercepts clicks, prevents default page reloads, and updates the URL via the History API.
+    * **`<Routes>` & `<Route>`**: The "content switcher" that listens for URL changes and renders the correct page component that matches the current path.
 
 ---
 
-**3. Signature**  
-* **Part:** `bjTn7PLMFR8U3oLwIRzw5uOJ00wihIeE9dZ_LjZTSgI`  
-* **Explanation:** This is the most critical security component.  
-  The signature is created by combining the header, payload, and a secret key (`JWT_SECRET`, known only to the server), then hashing them using the specified algorithm.  
-  The signature ensures two vital security properties:
-  * **Integrity:** The data inside the token has not been tampered with.  
-    If an attacker modifies the user ID in the payload, the signature will no longer match, and the server will reject the token.  
-  * **Authenticity:** The token was issued by *our server*, since only it has access to the secret key.
+## Authentication Flow Explained
 
+This application uses JWTs, transported via secure `httpOnly` cookies, to manage user sessions.
 
-## Authentication Flow with JSON Web Tokens (JWT)
+1.  **Login:** The user sends their email and password to the server.
+2.  **Verification & Cookie Creation:** The server verifies the credentials. If correct, it creates a unique JWT and sets it inside a secure, `httpOnly` cookie that is sent back to the user's browser.
+3.  **Browser Storage (Session Cookie):** The browser automatically stores the cookie. Since it's a session cookie, it is automatically deleted when the browser is closed. The `httpOnly` flag prevents any client-side JavaScript from accessing it.
+4.  **Authenticated Requests:** For every future API request, the browser **automatically** attaches the cookie. The client-side code does not need to manually manage tokens.
+5.  **Server Verification:** The server uses the `cookie-parser` middleware to read the token from the cookie and then verifies its signature. If valid, the server processes the request.
 
-This application uses **JSON Web Tokens (JWT)**, transported via **secure `httpOnly` cookies**, to manage user sessions in a stateless and secure manner.  
-This is a best-practice approach for modern web applications.
+This system is highly efficient because the server does not need to store any session information. It fully trusts the digitally signed information contained within the securely transported token.
 
 ---
 
-### How It Works: Step-by-Step
+## Getting Started Locally
 
-The authentication flow follows a simple and robust process:
+Follow these steps to clone and run the project on your local machine.
 
-1. **Login:**  
-   The user sends their email and password to the server.
+### Prerequisites
+* Node.js (LTS version recommended)
+* NPM (comes with Node.js)
+* Git
 
-2. **Verification & Cookie Creation:**  
-   The server verifies the credentials. If they are correct, it creates a unique JWT and sets it inside a **secure, `httpOnly` cookie** that is sent back in the response to the user's browser.
+### Installation Steps
 
-3. **Browser Storage (Session Cookie):**  
-   The browser receives the response and automatically stores the cookie.  
-   Since it's configured as a **session cookie**, the browser automatically deletes it when the session ends (i.e., when the browser is closed).  
-   The **`httpOnly` flag** prevents any client-side JavaScript from accessing the cookie — a critical security feature to mitigate XSS attacks.
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/SuecoAlto/Mern_Stack_Login_and_Signup_Page.git](https://github.com/SuecoAlto/Mern_Stack_Login_and_Signup_Page.git)
+    cd Mern_Stack_Login_and_Signup_Page
+    ```
 
-4. **Authenticated Requests:**  
-   For every future API request to the server, the browser **automatically includes the cookie** with the request.  
-   The client-side code does not need to manually manage tokens or `Authorization` headers.
+2.  **Install Backend Dependencies:**
+    ```bash
+    cd Backend
+    npm install
+    ```
 
-5. **Server Verification:**  
-   The server receives the request, uses the **`cookie-parser`** middleware to read the token from the cookie, and then verifies its signature using its secret key.  
-   If the signature is valid and the token hasn’t expired, the server knows who the user is and can grant access to the requested resource.
+3.  **Install Frontend Dependencies:**
+    ```bash
+    cd ../Frontend
+    npm install
+    ```
+
+4.  **Configure Environment Variables (Backend):**
+    * Navigate to the `Backend` directory.
+    * Create a file named `.env`.
+    * Add the following variables. You will need to provide your own MongoDB Atlas connection string and generate a secure JWT secret.
+
+        ```
+        MONGO_URI=your_mongodb_atlas_connection_string
+        JWT_SECRET=your_super_secret_jwt_string
+        PORT=5001
+        ```
+    * You can generate a strong secret key by running this command in your terminal:
+        ```bash
+        node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+        ```
+
+5.  **Run the Application:**
+    * **Start the Backend Server:** Open a terminal in the `Backend` directory and run:
+        ```bash
+        npm run dev
+        ```
+        The server will start on `http://localhost:5001`.
+
+    * **Start the Frontend Client:** Open a *new* terminal in the `Frontend` directory and run:
+        ```bash
+        npm run dev
+        ```
+        The application will be available at `http://localhost:5173`.
 
 ---
 
-This system is highly efficient because the server does **not** need to store any session information.  
-It fully trusts the digitally signed information contained within the securely transported token.
-
----
-
-## Anatomy of a JWT
-
-While the token is transported in a cookie, the structure of the token itself remains the same.  
-A JWT is not just a random string — it has a specific, decodable structure consisting of three parts separated by dots:
-
-**Header.Payload.Signature**
-
----
-
-
-
-
-
-
-
-This commit scaffolds the initial client-side application using Vite for a fast and modern development experience. It sets up the basic project structure and installs the core dependencies required for the login/signup application.
-
-- Initialized a new React project in the `/client` directory with Vite.
-- Installed primary dependencies: `axios` for making HTTP requests to the backend API, and `react-router-dom` for handling client-side routing.
-- Cleaned up the default Vite boilerplate files, including removing default assets, styles, and component code from `App.jsx` to establish a clean foundation for the project.
-
-
-URL:en i adressfältet ändras (/login, /register) och att texten på sidan byts ut (till "Login", "Register") — allt utan att sidan laddas om - tre huvudkomponenter från react-router som gör detta möjligt:
-
-<BrowserRouter> (Hjärnan/Chefen):
-
-Denna komponent, som vi la i main.jsx, är den övergripande chefen. Den använder webbläsarens inbyggda "History API" för att hålla koll på URL:en och ser till att din React-app och adressfältet alltid är synkroniserade. Den möjliggör hela systemet.
-
-<Link> (Navigatören/Dörröppnaren):
-
-När du klickar på en <Link to="/login">-komponent, gör den två saker:
-
-Den förhindrar webbläsarens standardbeteende, vilket skulle vara att göra en fullständig sidomladdning.
-
-Den talar om för <BrowserRouter> att "nu ska URL:en vara /login".
-
-<Routes> och <Route> (Växlaren/Innehållsvisaren):
-
-<Routes>-komponenten fungerar som en växel. Den tittar ständigt på den aktuella URL:en (som hanteras av <BrowserRouter>).
-
-Den letar sedan bland sina <Route>-barn för att hitta den vars path matchar den aktuella URL:en.
-
-När den hittar en match (t.ex. <Route path="/login" ... />), renderar den den komponent som anges i element-propen (i detta fall, vår Login-komponent).
-
-Så sammanfattningsvis: BrowserRouter är grunden, <Link> är det som initierar en URL-ändring utan omladdning, och <Routes>/<Route> är det som faktiskt byter ut innehållet på sidan som svar på den ändringen.
-
-
-Implementing Protected Routes and Global State
-
-To create a complete authentication experience, a system was implemented to manage the user's logged-in state across the application and protect certain routes from unauthorized access. This was achieved in three main parts:
-
-Part A: Backend Endpoints & Security Middleware
-
-The backend was enhanced with the necessary endpoints to manage a user's session:
-
-protect Middleware: A crucial security middleware was created to act as a gatekeeper for private routes. It works by:
-
-Extracting the JWT from the incoming httpOnly cookie on a request.
-
-Verifying the token's signature and expiration against the JWT_SECRET.
-
-If valid, it fetches the corresponding user from the database and attaches their data to the req object.
-
-If the token is missing or invalid, it immediately sends a 401 Unauthorized error, blocking access to the intended route.
-
-/profile Endpoint (GET): A new, protected route that utilizes the protect middleware. It allows the frontend to ask the server, "Who is the currently logged-in user?" and receive their profile data back.
-
-/logout Endpoint (GET): A public route that securely logs a user out by clearing the session cookie in their browser.
-
-Part B: Global State with React Context
-
-To manage the user's authentication status across all frontend components without "prop drilling," React Context was implemented:
-
-UserContext: A global context was created to serve as a single source of truth for the authenticated user's data.
-
-UserContextProvider: This provider component wraps the entire application. It holds the user state (user, setUser).
-
-Automatic Session Check: The provider contains a useEffect hook that runs once on initial application load. This hook makes a request to the /profile endpoint. If the request is successful (meaning a valid session cookie was sent by the browser), the user's data is populated into the global state, automatically logging them in.
-
-Part C: Dynamic UI and User Interaction
-
-The global state from UserContext was then used to make the UI dynamic and responsive to the user's authentication status:
-
-Dynamic Navbar: The navigation bar now uses useContext to check if a user is logged in.
-
-If logged out, it displays links to "Login" and "Register".
-
-If logged in, it displays a welcome message with the user's name, a link to the "Dashboard," and a "Logout" button.
-
-Protected Dashboard Page: A new dashboard page was created that is accessible to all users but only displays profile information if the user object in the context is populated.
-
-Logout Functionality: The "Logout" button in the navbar triggers a function that calls the /logout endpoint on the backend and simultaneously sets the global user state on the frontend to null, instantly updating the UI to a logged-out state.
-
-Key Troubleshooting Steps During Implementation
-
-During development, several common but educational issues were encountered and resolved. This debugging journey was critical to achieving a stable and functional authentication flow.
-
-Issue 1: 404 Not Found on API Calls
-
-Problem: Initial registration attempts from the frontend failed with a 404 error.
-
-Diagnosis: The browser's developer console showed that requests were being sent to the frontend's Vite server (:5173) instead of the backend's Express server (:5000).
-
-Solution: The axios.defaults.baseURL in main.jsx was corrected to point to the proper backend address (http://localhost:5000/api/auth).
-
-Issue 2: CORS Error with Cookies
-
-Problem: After fixing the baseURL, API calls were being blocked by the browser due to CORS policy.
-
-Diagnosis: Standard app.use(cors()) on the backend is insufficient when the frontend sends credentials (cookies). The browser requires a more explicit trust policy from the server.
-
-Solution: The CORS middleware on the server (server/index.js) was updated to explicitly specify the frontend's origin and allow credentials: cors({ origin: 'http://localhost:5173', credentials: true }).
-
-Issue 3: ERR_HTTP_HEADERS_SENT Server Crash
-
-Problem: The backend server crashed whenever a request was made to a protected route by a logged-in user.
-
-Diagnosis: The protect middleware function was calling next() to pass control to the controller but did not stop its own execution. It then proceeded to a final check that also tried to send a response, resulting in an attempt to send two responses to a single request.
-
-Solution: The logic in the protect middleware was refactored into a clear if/else block, ensuring that for any given request, the function would either call next() OR send an error response, but never both.
-
-Issue 4: React Warning: "Controlled to Uncontrolled Input"
-
-Problem: A console warning appeared after a successful registration.
-
-Diagnosis: The form's state was being reset with an empty object (setData({})), which caused the value prop of the inputs to change from an empty string ('') to undefined.
-
-Solution: The state reset logic was corrected to setData({ name: '', ... }), preserving the object's structure and ensuring the inputs remained "controlled" by React throughout their lifecycle.
+## Development Journey & Key Troubleshooting Steps
+
+During development, several common but educational issues were encountered and resolved, demonstrating a practical understanding of full-stack development challenges.
+
+* **Issue 1: `404 Not Found` on API Calls**
+    * **Problem:** Initial API calls from the frontend failed with a 404 error.
+    * **Diagnosis:** The Axios `baseURL` on the client was incorrectly pointing to the frontend's Vite server (`:5173`) instead of the backend's Express server (`:5000`).
+    * **Solution:** The `axios.defaults.baseURL` in `main.jsx` was corrected to point to the proper backend address.
+
+* **Issue 2: CORS Error with Cookies**
+    * **Problem:** After fixing the `baseURL`, API calls were blocked by the browser due to CORS policy.
+    * **Diagnosis:** A standard `cors()` configuration is insufficient when the frontend sends credentials (`withCredentials: true`). The server must explicitly trust the client's origin.
+    * **Solution:** The CORS middleware on the server was updated to specify the frontend's origin and allow credentials.
+
+* **Issue 3: `ERR_HTTP_HEADERS_SENT` Server Crash**
+    * **Problem:** The backend server crashed whenever a request was made to a protected route.
+    * **Diagnosis:** The `protect` middleware function was calling `next()` but did not stop its own execution, leading to an attempt to send two responses to a single request.
+    * **Solution:** The logic in the `protect` middleware was refactored into a clear `if/else` block, ensuring only one response path is ever taken.
+
+* **Issue 4: React Warning: "Controlled to Uncontrolled Input"**
+    * **Problem:** A console warning appeared after a successful form submission.
+    * **Diagnosis:** The form's state was being reset with an empty object (`setData({})`), causing the `value` prop of the inputs to change from an empty string (`''`) to `undefined`.
+    * **Solution:** The state reset logic was corrected to reset the state to its original object structure, ensuring the inputs remained "controlled" by React.
