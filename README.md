@@ -7,7 +7,7 @@ It serves as a robust starting point for any application requiring a secure user
 
 ## Live Demo
 
-You can try the App live, hosted on Render.com.
+You can try the App live, hosted on Render.com
 
 👉 [**Click here to open the live demo!**](https://loginsignuppage-9ztx.onrender.com/)  
 
@@ -152,7 +152,7 @@ Follow these steps to clone and run the project on your local machine.
 
 ## Development Journey & Key Troubleshooting Steps
 
-During development, several common but educational issues were encountered and resolved, demonstrating a practical understanding of full-stack development challenges.
+During development, several common but educational issues were encountered and resolved.
 
 * **Issue 1: `404 Not Found` on API Calls**
     * **Problem:** Initial API calls from the frontend failed with a 404 error.
@@ -179,12 +179,7 @@ During development, several common but educational issues were encountered and r
     * **Diagnosis:** The `forgotPassword` controller was generating reset URLs using `req.protocol` and `req.get('host')`, which resolved to the backend server's address.
     * **Solution:** Updated the URL generation to use a `FRONTEND_URL` environment variable that points to the React application (`http://localhost:5173` in development), ensuring reset links correctly navigate users to the frontend reset password page.
 
-* **Issue 6: Port Configuration Updates**
-    * **Problem:** The application initially used port 5000 for the backend, which conflicts with AirPlay on macOS.
-    * **Diagnosis:** macOS Monterey and later versions reserve port 5000 for AirPlay Receiver, causing `EADDRINUSE` errors.
-    * **Solution:** Changed the backend to run on port 5001 and updated all related configurations, including Axios baseURL and CORS settings.
-
-* **Issue 7: CORS Preflight Request Failures for Password Reset**
+* **Issue 6: CORS Preflight Request Failures for Password Reset**
     * **Problem:** `POST` requests to `/forgot-password` failed with CORS preflight errors, even though other endpoints worked.
     * **Diagnosis:** Complex requests (like `POST` with `application/json`) require explicit handling of `OPTIONS` preflight requests.
     * **Solution:** Added `app.options('*', cors(corsOptions))` to explicitly handle all preflight requests before other middleware, ensuring proper CORS headers are sent for all request types.
