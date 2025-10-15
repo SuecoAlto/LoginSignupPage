@@ -15,7 +15,7 @@ It serves as a robust starting point for any application requiring a secure user
 
 You can try the App live, hosted on Render.com.
 
-[**👉 Click here to open the live demo!**]([https://your-live-url.com](https://loginsignuppage-9ztx.onrender.com/))
+[**👉 Click here to open the live demo!**]([https://your-live-url.com](https://loginsignuppage-9ztx.onrender.com/)
 
 ⚠️ Please note: 
 Since the app is hosted on Render’s free tier, the server “sleeps” when inactive.
