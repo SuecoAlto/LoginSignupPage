@@ -9,7 +9,7 @@ import { UserContextProvider } from "./context/userContext.jsx";
 
 // Set a base URL for all Axios requests
 axios.defaults.baseURL = import.meta.env.DEV 
-  ? 'http://localhost:5000/api/auth' 
+  ? 'http://localhost:5001/api/auth' 
   : '/api/auth';
 // Allow Axios to send cookies with requests
 axios.defaults.withCredentials = true;

@@ -3,7 +3,7 @@ import nodemailer from 'nodemailer';
 
 const sendEmail = async (options) => {
   // 1. Create a "transporter" (the service that sends the email)
-  const transporter = nodemailer.createTransporter({
+  const transporter = nodemailer.createTransport({
     host: process.env.EMAIL_HOST,
     port: process.env.EMAIL_PORT,
     auth: {

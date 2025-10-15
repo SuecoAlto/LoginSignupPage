@@ -113,8 +113,9 @@ export const forgotPassword = async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   // 5. Skapa återställnings-URL för e-postmeddelandet
-  const resetUrl = `${req.protocol}://${req.get('host')}/reset-password/${resetToken}`;
-  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+  const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+  const resetUrl = `${frontendUrl}/reset-password/${resetToken}`;
+  const message = `You are receiving this email because you (or someone else) has requested the reset of a password. Click this link to reset your password: \n\n ${resetUrl}`;
 
   try {
     await sendEmail({

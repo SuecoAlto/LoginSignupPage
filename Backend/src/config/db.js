@@ -11,11 +11,11 @@ if (!mongoURI) {
 
 export const connectDB = async () => {
 	try {
-		await mongoose.connect(mongoURI);
-		console.log('MongoDB connected successfully');
+		// Add 'return' here to return the connection
+		return await mongoose.connect(mongoURI);
 	} catch (error) {
 		console.error('MongoDB connection error:', error);
-		process.exit(1); // Exit process with failure
+		throw error; // Throw error instead of process.exit to let caller handle it
 	};
 };
 
